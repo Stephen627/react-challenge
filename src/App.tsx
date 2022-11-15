@@ -3,6 +3,7 @@ import { fetchBreeds, fetchRandomDogs } from './service/dog'
 import { Status } from './interface/dog.d'
 import Loading from './components/loading/Loading'
 import Search from './components/search/Search'
+import ImageList from './components/image-list/ImageList'
 
 function App() {
   const [ error, setError ] = useState<string>('')
@@ -35,19 +36,16 @@ function App() {
     return <Loading />
   }
 
-  const imageJsx = images.map(src => {
-      return <img src={src} />
-  })
-
   return <div className="App">
     <Search
       breeds={breeds}
       onSubmit={getImages}
     />
-    <div>
-      {imageJsx}
-    </div>
+    <ImageList
+      images={images}
+    />
   </div>
 }
 
 export default App;
+
