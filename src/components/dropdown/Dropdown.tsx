@@ -1,3 +1,4 @@
+import './Dropdown.css'
 import React from 'react'
 
 export interface Option {
@@ -9,10 +10,11 @@ export interface Props {
   options: Option[]
   selectedOption: string 
   onChange: (value: string) => void
+  label: string
 }
 
 const Dropdown: React.FunctionComponent<Props> = (props: Props) => {
-  const { options, selectedOption, onChange } = props
+  const { options, selectedOption, onChange, label } = props
 
   const optionJsx = options.map((option: Option) => {
     return <option key={option.value} value={option.value}>{option.name}</option>
@@ -22,10 +24,13 @@ const Dropdown: React.FunctionComponent<Props> = (props: Props) => {
     onChange(evt.target.value)
   }
 
-  return <select value={selectedOption} onChange={onSelectChange}>
-    <option value={''}>Please select...</option>
-    {optionJsx}
-  </select>
+  return <div className="dropdown">
+    <label className="dropdown__label">{label}</label>
+    <select className="dropdown__select" value={selectedOption} onChange={onSelectChange}>
+      <option value={''}>Please select...</option>
+      {optionJsx}
+    </select>
+  </div>
 }
 
 export default Dropdown

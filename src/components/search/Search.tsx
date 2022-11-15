@@ -41,20 +41,23 @@ const Search: FunctionComponent<Props> = (props: Props) => {
     { name: '6', value: '6' },
   ]
 
-  return <header>
+  return <header className="search">
     <Dropdown 
+      label={'Breed'}
       options={breedOptions}
       selectedOption={selectedBreed}
       onChange={setSelectedBreed}
     />
     {subBreedOptions.length > 0 &&
       <Dropdown
+        label={'Sub Breed'}
         options={subBreedOptions}
         selectedOption={selectedSubBreed}
         onChange={setSelectedSubBreed}
       />
     }
     <Dropdown
+      label={'Number of Images'}
       options={numberOfImages}
       selectedOption={selectedNumberOfImages}
       onChange={setSelectedNumberOfImages}
