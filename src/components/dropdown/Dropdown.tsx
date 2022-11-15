@@ -11,10 +11,12 @@ export interface Props {
   selectedOption: string 
   onChange: (value: string) => void
   label: string
+  error: boolean
+  removeDefault?: boolean
 }
 
 const Dropdown: React.FunctionComponent<Props> = (props: Props) => {
-  const { options, selectedOption, onChange, label } = props
+  const { options, selectedOption, onChange, label, error, removeDefault } = props
 
   const optionJsx = options.map((option: Option) => {
     return <option key={option.value} value={option.value}>{option.name}</option>
@@ -24,10 +26,18 @@ const Dropdown: React.FunctionComponent<Props> = (props: Props) => {
     onChange(evt.target.value)
   }
 
-  return <div className="dropdown">
+  const className = [
+    'dropdown'
+  ]
+
+  if (error) {
+    className.push('dropdown--error')
+  }
+
+  return <div className={className.join(' ')}>
     <label className="dropdown__label">{label}</label>
     <select className="dropdown__select" value={selectedOption} onChange={onSelectChange}>
-      <option value={''}>Please select...</option>
+      {!removeDefault && <option value={''}>Please select...</option>}
       {optionJsx}
     </select>
   </div>

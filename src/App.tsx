@@ -10,6 +10,7 @@ function App() {
   const [ breeds, setBreeds ] = useState<{[key: string]: string[]}>({})
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ images, setImages ] = useState<string[]>([])
+  const [ errorOnFields, setErrorOnFields ] = useState<any>([])
 
   useEffect(() => {
     fetchBreeds().then(data => {
@@ -22,7 +23,16 @@ function App() {
     })
   }, [])
 
-  const getImages = (selectedBreed: string, selectedSubBreed: string, amount: number) => {
+  const getImages = (selectedBreed: string, selectedSubBreed: string, amount: number, hasSubBreeds: boolean) => {
+    if (!selectedBreed) {
+      setErrorOnFields([ 'breed' ])
+      return
+    }
+    if (hasSubBreeds && !selectedSubBreed) {
+      setErrorOnFields([ 'sub-breed' ])
+      return
+    }
+
     fetchRandomDogs(selectedBreed, amount, selectedSubBreed).then(res => {
       setImages(res.message)
     })
@@ -40,6 +50,8 @@ function App() {
     <Search
       breeds={breeds}
       onSubmit={getImages}
+      errorOnFields={errorOnFields}
+      resetFieldErrors={() => setErrorOnFields([])}
     />
     <ImageList
       images={images}

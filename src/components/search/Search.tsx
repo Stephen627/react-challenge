@@ -5,11 +5,13 @@ import Dropdown, { Option } from '../dropdown/Dropdown'
 
 export interface Props {
   breeds: {[key: string]: string[]}
-  onSubmit: (selectedBreed: string, selectedSubBreed: string, amount: number) => void
+  onSubmit: (selectedBreed: string, selectedSubBreed: string, amount: number, hasSubBreeds: boolean) => void
+  resetFieldErrors: () => void
+  errorOnFields: string[]
 }
 
 const Search: FunctionComponent<Props> = (props: Props) => {
-  const { breeds, onSubmit } = props
+  const { breeds, onSubmit, errorOnFields, resetFieldErrors } = props
 
   const [ selectedBreed, setSelectedBreed ] = useState<string>('')
   const [ selectedSubBreed, setSelectedSubBreed ] = useState<string>('')
@@ -46,14 +48,22 @@ const Search: FunctionComponent<Props> = (props: Props) => {
       label={'Breed'}
       options={breedOptions}
       selectedOption={selectedBreed}
-      onChange={setSelectedBreed}
+      onChange={value => {
+        resetFieldErrors()
+        setSelectedBreed(value)
+      }}
+      error={errorOnFields.indexOf('breed') !== -1}
     />
     {subBreedOptions.length > 0 &&
       <Dropdown
         label={'Sub Breed'}
         options={subBreedOptions}
         selectedOption={selectedSubBreed}
-        onChange={setSelectedSubBreed}
+        onChange={value => {
+        resetFieldErrors()
+          setSelectedSubBreed(value)
+        }}
+        error={errorOnFields.indexOf('sub-breed') !== -1}
       />
     }
     <Dropdown
@@ -61,8 +71,14 @@ const Search: FunctionComponent<Props> = (props: Props) => {
       options={numberOfImages}
       selectedOption={selectedNumberOfImages}
       onChange={setSelectedNumberOfImages}
+      error={false}
+      removeDefault={true}
     />
-    <input type={'submit'} value={'View Images'} onClick={() => onSubmit(selectedBreed, selectedSubBreed, parseInt(selectedNumberOfImages)) } />
+    <input
+      type={'submit'}
+      value={'View Images'}
+      onClick={() => onSubmit(selectedBreed, selectedSubBreed, parseInt(selectedNumberOfImages), subBreedOptions.length > 0) }
+    />
   </header>
 }
 

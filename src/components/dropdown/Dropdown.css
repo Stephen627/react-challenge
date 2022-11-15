@@ -3,3 +3,7 @@
   flex-direction: column;
   margin: 0 2rem;
 }
+
+.dropdown.dropdown--error select {
+  border: 1px solid red;
+}
