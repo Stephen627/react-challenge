@@ -1,15 +1,12 @@
-import { useEffect, useState, useMemo } from 'react'
-import Dropdown, { Option } from './components/dropdown/Dropdown'
-import { fetchBreeds, fetchRandomDogs, transformName } from './service/dog'
+import { useEffect, useState } from 'react'
+import { fetchBreeds, fetchRandomDogs } from './service/dog'
 import { Status } from './interface/dog.d'
 import Loading from './components/loading/Loading'
+import Search from './components/search/Search'
 
 function App() {
   const [ error, setError ] = useState<string>('')
   const [ breeds, setBreeds ] = useState<{[key: string]: string[]}>({})
-  const [ selectedBreed, setSelectedBreed ] = useState<string>('')
-  const [ selectedSubBreed, setSelectedSubBreed ] = useState<string>('')
-  const [ selectedNumberOfImages, setSelectedNumberOfImages ] = useState<string>('1')
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ images, setImages ] = useState<string[]>([])
 
@@ -24,25 +21,8 @@ function App() {
     })
   }, [])
 
-  const breedOptions: any[] = Object.keys(breeds).map(breed => {
-    return {
-      name: transformName(breed),
-      value: breed,
-    }
-  })
-
-  const subBreedOptions = useMemo(() => {
-    const subBreeds = selectedBreed && breeds[selectedBreed] && breeds[selectedBreed].length ? breeds[selectedBreed] : []
-    return subBreeds.map(subBreed => {
-      return {
-        name: transformName(subBreed),
-        value: subBreed,
-      }
-    })
-  }, [ selectedBreed ])
-
-  const getImages = () => {
-    fetchRandomDogs(selectedBreed, parseInt(selectedNumberOfImages), selectedSubBreed).then(res => {
+  const getImages = (selectedBreed: string, selectedSubBreed: string, amount: number) => {
+    fetchRandomDogs(selectedBreed, amount, selectedSubBreed).then(res => {
       setImages(res.message)
     })
   }
@@ -59,36 +39,11 @@ function App() {
       return <img src={src} />
   })
 
-  const numberOfImages: Option[] = [
-    { name: '1', value: '1' },
-    { name: '2', value: '2' },
-    { name: '3', value: '3' },
-    { name: '4', value: '4' },
-    { name: '5', value: '5' },
-    { name: '6', value: '6' },
-  ]
-
   return <div className="App">
-    <header>
-      <Dropdown 
-        options={breedOptions}
-        selectedOption={selectedBreed}
-        onChange={setSelectedBreed}
-      />
-      {subBreedOptions.length > 0 &&
-        <Dropdown
-          options={subBreedOptions}
-          selectedOption={selectedSubBreed}
-          onChange={setSelectedSubBreed}
-        />
-      }
-      <Dropdown
-        options={numberOfImages}
-        selectedOption={selectedNumberOfImages}
-        onChange={setSelectedNumberOfImages}
-      />
-      <input type={'submit'} value={'View Images'} onClick={getImages} />
-    </header>
+    <Search
+      breeds={breeds}
+      onSubmit={getImages}
+    />
     <div>
       {imageJsx}
     </div>
